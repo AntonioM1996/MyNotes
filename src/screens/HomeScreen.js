@@ -68,8 +68,8 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Icon name="file-tray-stacked-outline" style={styles.buttonIcon} onPress={handleMyNotesPress} />
-                <CustomText style={styles.headerText}>SIUM.</CustomText>
-                <Icon name="person-outline" style={styles.buttonIcon} onPress={handleMyProfilePress} />
+                <CustomText style={styles.headerText}>MyNotes</CustomText>
+                {/* <Icon name="person-outline" style={styles.buttonIcon} onPress={handleMyProfilePress} /> */}
             </View>
             <SafeAreaView style={styles.body}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     },
     logoutButtonContainer: {
         marginTop: "auto"
-    },
+    },  
     header: {
         backgroundColor: "black",
         height: 110,

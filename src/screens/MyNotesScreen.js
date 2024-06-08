@@ -47,7 +47,7 @@ const MyNotesScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <CustomText style={styles.headerText}>My SIUMs.</CustomText>
+                <CustomText style={styles.headerText}>MyNotes</CustomText>
                 <Icon name="home-outline" style={styles.myNotesButtonIcon} onPress={handleHomePress} />
             </View>
             <SafeAreaView style={styles.body}>
