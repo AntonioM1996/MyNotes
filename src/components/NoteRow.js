@@ -10,15 +10,15 @@ const NoteRow = ({ note, onDelete }) => {
     useEffect(() => {
         console.log('NoteRow note', note);
 
-        let localDate = new Date(note.localCreatedDate);
-        note.createdDateLocale = localDate.toLocaleString("en-US");
+        let localDate = new Date(note.id);
+        note.createdDateLocale = localDate.toLocaleString("it"); // en-US?
 
         setThisNote(note);
     }, []);
 
     const renderRightActions = (progress, dragX) => {
         return (
-            <RectButton style={styles.deleteButton} onPress={() => {onDelete(thisNote.localId)}}>
+            <RectButton style={styles.deleteButton} onPress={() => {onDelete(thisNote.id)}}>
                 <Animated.View
                     style={[
                         styles.deleteText

@@ -13,7 +13,7 @@ const NoteList = ({ notes, onDeleteNote }) => {
         setSortedNotes(notes.sort(function (a, b) {
             // Turn your strings into dates, and then subtract them
             // to get a value that is either negative, positive, or zero.
-            return new Date(b.localCreatedDate) - new Date(a.localCreatedDate);
+            return new Date(b.createdDate) - new Date(a.createdDate);
         }));
     }, [notes]);
 
@@ -26,7 +26,7 @@ const NoteList = ({ notes, onDeleteNote }) => {
                 renderItem={({item}) => (
                     <NoteRow note={item} onDelete={onDeleteNote} />
                 )}
-                keyExtractor={item => item.localId}
+                keyExtractor={item => item.id}
             />
         </GestureHandlerRootView>
     );

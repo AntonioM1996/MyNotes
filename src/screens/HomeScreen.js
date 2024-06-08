@@ -4,9 +4,10 @@ import { View, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "rea
 import CustomText from "../components/CustomText";
 import { STYLES } from "../services/Utils";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
-import { saveNote } from "../services/Utils";
+import { saveNote, getNotes } from "../services/Utils";
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const HomeScreen = ({ navigation }) => {
     // const { user, signOut } = useAuth();
@@ -44,18 +45,10 @@ const HomeScreen = ({ navigation }) => {
         console.log("handleSaveNote", noteBody);
 
         if (noteBody && noteBody.length > 0) {
-            /* const note = {
-                user: user.id,
-                body: noteBody,
-                localCreatedDate: new Date()
-            };
-
-            saveNote(note).then(() => {
-                setInputEnabled(!inputEnabled);
-                setNote(null);
-            }); */
-
-            // TODO
+            saveNote(noteBody).then(result => {
+                console.log("--- saveNote new Note Id ---");
+                console.log(result);
+            });
         }
     }
 

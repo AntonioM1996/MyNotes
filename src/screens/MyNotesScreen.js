@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, Button, StyleSheet } from "react-native";
 import CustomText from "../components/CustomText";
-import { STYLES, deleteNote } from "../services/Utils";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STYLES, deleteAllNotes, deleteNote, getNotes } from "../services/Utils";
 import Icon from 'react-native-vector-icons/Ionicons';
 import NoteList from "../components/NoteList";
 
@@ -11,13 +10,9 @@ const MyNotesScreen = ({ navigation }) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            AsyncStorage.getItem("notes").then(result => {
-                if(result) {
-                    setNotes(JSON.parse(result));
-                }
-                else {
-                    setNotes([]);
-                }
+            getNotes().then(result => {
+                console.log("notes: " + result.length);
+                setNotes(result);
             });
         });
 
@@ -30,32 +25,23 @@ const MyNotesScreen = ({ navigation }) => {
     }
 
     const eraseAllNotes = function () {
-        /* deleteNote(null, true).then(result => {
-            console.log('eraseAllNotes result', result.data);
-
-            if(result.data) {
-                setNotes([]);
-            }
-        }); */
-
-        // TODO
+        deleteAllNotes().then(() => {
+            getNotes().then(result => {
+                setNotes(result);
+            });
+        });
     }
 
-    const deleteThisNote = function(noteLocalId) {
-        /* console.log("deleteNote", noteLocalId);
+    const deleteThisNote = function(noteId) {
+        console.log("deleteNote", noteId);
 
-        if(noteLocalId) {
-            const thisNote = notes.filter(note => note.localId == noteLocalId)[0];
-
-            deleteNote(thisNote, false).then(result => {
-                console.log('deleteThisNote result', result);
-                setNotes(result);
-            }).catch(error => {
-                console.error(error);
+        if(noteId) {
+            deleteNote(noteId).then(() => {
+                getNotes().then(result => {
+                    setNotes(result);
+                });
             });
-        } */
-
-        // TODO
+        }
     }
 
     return (
