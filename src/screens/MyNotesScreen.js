@@ -24,13 +24,13 @@ const MyNotesScreen = ({ navigation }) => {
         navigation.navigate("Home");
     }
 
-    const eraseAllNotes = function () {
+    /* const eraseAllNotes = function () {
         deleteAllNotes().then(() => {
             getNotes().then(result => {
                 setNotes(result);
             });
         });
-    }
+    } */
 
     const deleteThisNote = function(noteId) {
         console.log("deleteNote", noteId);
@@ -48,7 +48,7 @@ const MyNotesScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <CustomText style={styles.headerText}>MyNotes</CustomText>
-                <Icon name="home-outline" style={styles.myNotesButtonIcon} onPress={handleHomePress} />
+                <Icon name="create-outline" style={styles.myNotesButtonIcon} onPress={handleHomePress} />
             </View>
             <SafeAreaView style={styles.body}>
                 {
@@ -58,12 +58,12 @@ const MyNotesScreen = ({ navigation }) => {
                             <CustomText style={styles.placeholder}>You have no notes yet.</CustomText>
                         </View>
                 }
-                {
+                {/* {
                     notes.length > 0 &&
                     <View style={{ marginTop: "auto" }}>
                         <Button title="Delete all notes" onPress={eraseAllNotes} color={"red"} />
                     </View>
-                }
+                } */}
             </SafeAreaView>
         </View>
     );
@@ -83,11 +83,11 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: "black",
-        height: 110,
+        height: 100,
         flexDirection: "row",
         paddingHorizontal: 20,
         justifyContent: "space-between",
-        paddingTop: 60
+        paddingTop: 50
     },
     headerText: {
         color: "white",
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     },
     myNotesButtonIcon: {
         fontSize: 30,
+        paddingTop: 5,
         color: "white",
     },
     inputBox: {
