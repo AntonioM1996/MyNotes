@@ -55,7 +55,7 @@ const MyNotesScreen = ({ navigation }) => {
                     notes.length > 0 ?
                         <NoteList notes={notes} onDeleteNote={deleteThisNote} /> :
                         <View style={styles.noNotesMessageContainer}>
-                            <CustomText>You have no SIUMs yet.</CustomText>
+                            <CustomText style={styles.placeholder}>You have no notes yet.</CustomText>
                         </View>
                 }
                 {

@@ -78,7 +78,7 @@ const HomeScreen = ({ navigation }) => {
                             {inputEnabled ?
                                 <TextInput ref={textInputRef} style={styles.textInput} multiline={true}
                                     onChangeText={handleTextChange} /> :
-                                <CustomText style={styles.placeholder}>Let your SIUM flow here...</CustomText>
+                                <CustomText style={styles.placeholder}>Tap here to type your note</CustomText>
                             }
                         </TouchableOpacity>
                     </GestureDetector>
