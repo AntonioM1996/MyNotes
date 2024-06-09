@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, SafeAreaView, StyleSheet, TextInput } from "react-native";
+import { View, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import CustomText from "../components/CustomText";
 import { STYLES } from "../services/Utils";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
@@ -15,6 +15,15 @@ const HomeScreen = ({ navigation }) => {
         enableVibrateFallback: true,
         ignoreAndroidSystemSettings: false,
     };
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            textInputRef.current?.focus();
+        });
+
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
+    }, [navigation]);
 
     longPress.onStart((event) => {
         console.log('LONG PRESS START');
@@ -58,15 +67,17 @@ const HomeScreen = ({ navigation }) => {
             <SafeAreaView style={styles.body}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     <GestureDetector gesture={longPress}>
-                        <TextInput 
-                            ref={textInputRef}
-                            autoFocus={true}
-                            style={styles.textInput} 
-                            multiline={true} 
-                            onChangeText={handleTextChange} 
-                            onFocus={() => {console.log('FOCUSED!')}}
-                            onBlur={() => {console.log('BLURRED!')}}
-                        />
+                        <TouchableOpacity style={styles.inputBox}>
+                            <TextInput 
+                                ref={textInputRef}
+                                autoFocus={true}
+                                style={styles.textInput} 
+                                multiline={true} 
+                                onChangeText={handleTextChange} 
+                                onFocus={() => {console.log('FOCUSED!')}}
+                                onBlur={() => {console.log('BLURRED!')}}
+                            />
+                        </TouchableOpacity>
                     </GestureDetector>
                 </GestureHandlerRootView>
             </SafeAreaView>
@@ -117,8 +128,6 @@ const styles = StyleSheet.create({
         marginTop: "auto"
     },
     textInput: {
-        flex: 1,
-        padding: 30,
         fontFamily: STYLES.FONT_FAMILY,
         color: STYLES.BACKGROUND_COLOR == "black" ? "white" : "black"
     }
