@@ -7,7 +7,7 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-g
 import { saveNote, getNotes } from "../services/Utils";
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import RichTextEditor from "../components/RichTextEditor";
 
 const HomeScreen = ({ navigation }) => {
     // const { user, signOut } = useAuth();
@@ -60,9 +60,9 @@ const HomeScreen = ({ navigation }) => {
         navigation.navigate("MyNotes");
     }
 
-    const handleMyProfilePress = () => {
+    /* const handleMyProfilePress = () => {
         navigation.navigate("MyProfile");
-    }
+    } */
 
     return (
         <View style={styles.container}>
