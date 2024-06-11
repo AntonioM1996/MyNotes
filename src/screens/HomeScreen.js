@@ -1,18 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
-// import { useAuth } from "../hooks/useAuth";
 import CustomText from "../components/CustomText";
 import { STYLES } from "../services/Utils";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
-import { saveNote, getNotes } from "../services/Utils";
+import { saveNote } from "../services/Utils";
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
-const HomeScreen = ({ navigation }) => {
-    // const { user, signOut } = useAuth();
-    const [inputEnabled, setInputEnabled] = useState(false);
+const HomeScreen = ({ navigation, route }) => {
     const [note, setNote] = useState();
+    const [noteToEdit, setNoteToEdit] = useState();
+    const [showInput, setShowInput] = useState(false);
     const textInputRef = useRef();
     const longPress = Gesture.LongPress();
     const hapticOptions = {
@@ -20,34 +18,57 @@ const HomeScreen = ({ navigation }) => {
         ignoreAndroidSystemSettings: false,
     };
 
+    useEffect(() => {
+        console.log("HomeScreen useEffect...");
+
+        const unsubscribe = navigation.addListener('focus', () => {
+            console.log("HomeScreen params", route.params);
+
+            if (route.params?.noteToEdit) {
+                setNoteToEdit(route.params.noteToEdit);
+                setNote(route.params.noteToEdit?.body);
+                setShowInput(true);
+            }
+            else {
+                setNote(null);
+                setNoteToEdit(null);
+                setTimeout(() => { setShowInput(true) }, 300);
+            }
+
+            // setShowInput(true);
+
+            /* if (!route.params?.noteToEdit) {
+                setTimeout(() => { textInputRef.current?.focus() }, 300);
+            } */
+        });
+
+        const unsubscribe1 = navigation.addListener('blur', () => {
+            setShowInput(false);
+            route.params = undefined;
+        });
+
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return () => { unsubscribe(); unsubscribe1(); }
+    }, [navigation, route]);
+
     longPress.onStart((event) => {
         console.log('LONG PRESS START');
 
-        if (inputEnabled && note && note.length > 0) {
+        if (note && note.length > 0) {
             handleSaveNote(note);
             RNReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
-            toggleNoteInput();
         }
     });
-
-    useEffect(() => {
-        if (textInputRef.current) {
-            textInputRef.current.focus();
-        }
-    }, [inputEnabled]);
-
-    const toggleNoteInput = function () {
-        setInputEnabled(!inputEnabled);
-        setNote(null);
-    }
 
     const handleSaveNote = function (noteBody) {
         console.log("handleSaveNote", noteBody);
 
         if (noteBody && noteBody.length > 0) {
-            saveNote(noteBody).then(result => {
+            saveNote(noteBody, noteToEdit?.id).then(result => {
                 console.log("--- saveNote new Note Id ---");
                 console.log(result);
+
+                handleMyNotesPress();
             });
         }
     }
@@ -57,11 +78,15 @@ const HomeScreen = ({ navigation }) => {
     }
 
     const handleMyNotesPress = () => {
-        navigation.navigate("MyNotes");
-    }
+        setShowInput(false);
+        route.params = undefined;
+        
+        /* navigation.reset({
+            index: 0,
+            routes: [{ name: 'MyNotes' }],
+        }); */
 
-    const handleMyProfilePress = () => {
-        navigation.navigate("MyProfile");
+        navigation.navigate("MyNotes");
     }
 
     return (
@@ -69,16 +94,23 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.header}>
                 <Icon name="file-tray-stacked-outline" style={styles.buttonIcon} onPress={handleMyNotesPress} />
                 <CustomText style={styles.headerText}>MyNotes</CustomText>
-                {/* <Icon name="person-outline" style={styles.buttonIcon} onPress={handleMyProfilePress} /> */}
             </View>
             <SafeAreaView style={styles.body}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     <GestureDetector gesture={longPress}>
-                        <TouchableOpacity style={styles.inputBox} onPress={toggleNoteInput}>
-                            {inputEnabled ?
-                                <TextInput ref={textInputRef} style={styles.textInput} multiline={true}
-                                    onChangeText={handleTextChange} /> :
-                                <CustomText style={styles.placeholder}>Let your SIUM flow here...</CustomText>
+                        <TouchableOpacity style={styles.inputBox}>
+                            {
+                                showInput &&
+                                <TextInput
+                                    ref={textInputRef}
+                                    autoFocus={noteToEdit == null}
+                                    style={styles.textInput}
+                                    multiline={true}
+                                    onChangeText={handleTextChange}
+                                    onFocus={() => { console.log('FOCUSED!') }}
+                                    onBlur={() => { console.log('BLURRED!') }}
+                                    value={note}
+                                />
                             }
                         </TouchableOpacity>
                     </GestureDetector>
@@ -99,14 +131,14 @@ const styles = StyleSheet.create({
     },
     logoutButtonContainer: {
         marginTop: "auto"
-    },  
+    },
     header: {
         backgroundColor: "black",
-        height: 110,
+        height: 100,
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: 20,
-        paddingTop: 60
+        paddingTop: 50
     },
     headerText: {
         color: "white",
@@ -117,6 +149,7 @@ const styles = StyleSheet.create({
     buttonIcon: {
         fontSize: 30,
         color: "white",
+        paddingTop: 5
     },
     inputBox: {
         flex: 1,

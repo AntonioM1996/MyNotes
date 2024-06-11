@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import NoteRow from "./NoteRow";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-const NoteList = ({ notes, onDeleteNote }) => {
+const NoteList = ({ notes, onDeleteNote, onNotePress }) => {
     const [sortedNotes, setSortedNotes] = useState();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const NoteList = ({ notes, onDeleteNote }) => {
                 showsVerticalScrollIndicator={false}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
                 renderItem={({item}) => (
-                    <NoteRow note={item} onDelete={onDeleteNote} />
+                    <NoteRow note={item} onDelete={onDeleteNote} onNotePress={onNotePress} />
                 )}
                 keyExtractor={item => item.id}
             />
