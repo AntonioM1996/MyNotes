@@ -16,4 +16,4 @@ const HomeNavigator = () => {
     );
 }
 
-export default HomeNavigator
+export default HomeNavigator;

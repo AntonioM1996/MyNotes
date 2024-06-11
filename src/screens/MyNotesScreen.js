@@ -44,6 +44,17 @@ const MyNotesScreen = ({ navigation }) => {
         }
     }
 
+    const editNote = function(noteId) {
+        console.log("editNote " + noteId);
+
+        navigation.navigate("HomeNavigator", {
+            screen: "Home",
+            params: {
+                noteToEdit: notes.find(note => note.id == noteId)
+            }
+        });
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -53,7 +64,7 @@ const MyNotesScreen = ({ navigation }) => {
             <SafeAreaView style={styles.body}>
                 {
                     notes.length > 0 ?
-                        <NoteList notes={notes} onDeleteNote={deleteThisNote} /> :
+                        <NoteList notes={notes} onDeleteNote={deleteThisNote} onNotePress={editNote} /> :
                         <View style={styles.noNotesMessageContainer}>
                             <CustomText style={styles.placeholder}>You have no notes yet.</CustomText>
                         </View>

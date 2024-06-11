@@ -7,8 +7,10 @@ import { saveNote } from "../services/Utils";
 import Icon from 'react-native-vector-icons/Ionicons';
 import RNReactNativeHapticFeedback from "react-native-haptic-feedback";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
     const [note, setNote] = useState();
+    const [noteToEdit, setNoteToEdit] = useState();
+    const [showInput, setShowInput] = useState(false);
     const textInputRef = useRef();
     const longPress = Gesture.LongPress();
     const hapticOptions = {
@@ -17,13 +19,37 @@ const HomeScreen = ({ navigation }) => {
     };
 
     useEffect(() => {
+        console.log("HomeScreen useEffect...");
+
         const unsubscribe = navigation.addListener('focus', () => {
-            textInputRef.current?.focus();
+            console.log("HomeScreen params", route.params);
+
+            if (route.params?.noteToEdit) {
+                setNoteToEdit(route.params.noteToEdit);
+                setNote(route.params.noteToEdit?.body);
+                setShowInput(true);
+            }
+            else {
+                setNote(null);
+                setNoteToEdit(null);
+                setTimeout(() => { setShowInput(true) }, 300);
+            }
+
+            // setShowInput(true);
+
+            /* if (!route.params?.noteToEdit) {
+                setTimeout(() => { textInputRef.current?.focus() }, 300);
+            } */
+        });
+
+        const unsubscribe1 = navigation.addListener('blur', () => {
+            setShowInput(false);
+            route.params = undefined;
         });
 
         // Return the function to unsubscribe from the event so it gets removed on unmount
-        return unsubscribe;
-    }, [navigation]);
+        return () => { unsubscribe(); unsubscribe1(); }
+    }, [navigation, route]);
 
     longPress.onStart((event) => {
         console.log('LONG PRESS START');
@@ -38,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
         console.log("handleSaveNote", noteBody);
 
         if (noteBody && noteBody.length > 0) {
-            saveNote(noteBody).then(result => {
+            saveNote(noteBody, noteToEdit?.id).then(result => {
                 console.log("--- saveNote new Note Id ---");
                 console.log(result);
 
@@ -52,10 +78,15 @@ const HomeScreen = ({ navigation }) => {
     }
 
     const handleMyNotesPress = () => {
-        navigation.reset({
+        setShowInput(false);
+        route.params = undefined;
+        
+        /* navigation.reset({
             index: 0,
             routes: [{ name: 'MyNotes' }],
-        });
+        }); */
+
+        navigation.navigate("MyNotes");
     }
 
     return (
@@ -68,15 +99,19 @@ const HomeScreen = ({ navigation }) => {
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     <GestureDetector gesture={longPress}>
                         <TouchableOpacity style={styles.inputBox}>
-                            <TextInput 
-                                ref={textInputRef}
-                                autoFocus={true}
-                                style={styles.textInput} 
-                                multiline={true} 
-                                onChangeText={handleTextChange} 
-                                onFocus={() => {console.log('FOCUSED!')}}
-                                onBlur={() => {console.log('BLURRED!')}}
-                            />
+                            {
+                                showInput &&
+                                <TextInput
+                                    ref={textInputRef}
+                                    autoFocus={noteToEdit == null}
+                                    style={styles.textInput}
+                                    multiline={true}
+                                    onChangeText={handleTextChange}
+                                    onFocus={() => { console.log('FOCUSED!') }}
+                                    onBlur={() => { console.log('BLURRED!') }}
+                                    value={note}
+                                />
+                            }
                         </TouchableOpacity>
                     </GestureDetector>
                 </GestureHandlerRootView>
@@ -96,7 +131,7 @@ const styles = StyleSheet.create({
     },
     logoutButtonContainer: {
         marginTop: "auto"
-    },  
+    },
     header: {
         backgroundColor: "black",
         height: 100,

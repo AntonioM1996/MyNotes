@@ -9,26 +9,45 @@ export const STYLES = {
     FONT_FAMILY: "Avenir Next"
 }
 
-export const saveNote = async function(noteBody) {
+export const saveNote = async function(noteBody, noteId) {
     console.log("saveNote...");
-    
-    const note = {
-        createdDate: (new Date()).toUTCString(),
-        body: noteBody,
-        id: Date.now(),
-        title: Date.now() // TODO handle title
-    };
-
-    console.log("saving Note...");
-    console.log(note);
+    let newNote;
 
     try {
         let notes = await getNotes();
-        notes.push(note);
+
+        if(noteId) {
+            let foundNote = notes.find(note => note.id == noteId);
+
+            if(foundNote) {
+                let updatedNote = foundNote;
+                updatedNote.body = noteBody;
+                updatedNote.createdDate = (new Date()).toUTCString(); // TODO add a lastModifiedDate
+
+                let index = notes.indexOf(foundNote);
+
+                if(index !== -1) {
+                    notes[index] = updatedNote;
+                }
+            }
+        }
+        else {
+            newNote = {
+                createdDate: (new Date()).toUTCString(),
+                body: noteBody,
+                id: Date.now(),
+                title: Date.now() // TODO handle title
+            };
+        
+            console.log("saving Note...");
+            console.log(newNote);
+
+            notes.push(newNote);
+        }
 
         await AsyncStorage.setItem(NOTES_KEY, JSON.stringify(notes));
 
-        return note.id;
+        return newNote?.id ? newNote?.id : noteId;
     }
     catch(error) {
         console.error("saveNote error");

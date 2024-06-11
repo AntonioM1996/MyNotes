@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { RectButton, Swipeable } from 'react-native-gesture-handler';
 import CustomText from './CustomText';
 import { STYLES } from '../services/Utils';
 
-const NoteRow = ({ note, onDelete }) => {
+const NoteRow = ({ note, onDelete, onNotePress }) => {
     const [thisNote, setThisNote] = useState(note);
 
     useEffect(() => {
         console.log('NoteRow note', note);
 
-        let localDate = new Date(note.id);
+        let localDate = new Date(note.createdDate);
         note.createdDateLocale = localDate.toLocaleString("it"); // en-US?
 
         setThisNote(note);
-    }, []);
+    }, [note]);
 
     const renderRightActions = (progress, dragX) => {
         return (
@@ -32,8 +32,10 @@ const NoteRow = ({ note, onDelete }) => {
 
     return (
         <Swipeable renderRightActions={renderRightActions} childrenContainerStyle={styles.row}>
-            <CustomText style={styles.noteBody}>{thisNote.body}</CustomText>
-            <CustomText style={styles.noteDate}>{thisNote.createdDateLocale}</CustomText>
+            <TouchableOpacity onPress={() => {onNotePress(thisNote.id)}}>
+                <CustomText style={styles.noteBody}>{thisNote.body}</CustomText>
+                <CustomText style={styles.noteDate}>{thisNote.createdDateLocale}</CustomText>
+            </TouchableOpacity>
         </Swipeable>
     );
 };
