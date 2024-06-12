@@ -11,7 +11,7 @@ const NoteRow = ({ note, onDelete, onNotePress }) => {
         console.log('NoteRow note', note);
 
         let localDate = new Date(note.createdDate);
-        note.createdDateLocale = localDate.toLocaleString("it"); // en-US?
+        note.createdDateLocale = localDate.toLocaleDateString("it"); // en-US?
 
         setThisNote(note);
     }, [note]);
@@ -31,8 +31,8 @@ const NoteRow = ({ note, onDelete, onNotePress }) => {
     };
 
     return (
-        <Swipeable renderRightActions={renderRightActions} childrenContainerStyle={styles.row}>
-            <TouchableOpacity onPress={() => {onNotePress(thisNote.id)}}>
+        <Swipeable renderRightActions={renderRightActions}>
+            <TouchableOpacity onPress={() => {onNotePress(thisNote.id)}} style={styles.row}>
                 <CustomText style={styles.noteBody}>{thisNote.body}</CustomText>
                 <CustomText style={styles.noteDate}>{thisNote.createdDateLocale}</CustomText>
             </TouchableOpacity>
@@ -42,8 +42,6 @@ const NoteRow = ({ note, onDelete, onNotePress }) => {
 
 const styles = StyleSheet.create({
     row: {
-        flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: "space-between",
         padding: 16,
         backgroundColor: STYLES.BACKGROUND_COLOR
@@ -61,7 +59,8 @@ const styles = StyleSheet.create({
     },
     noteBody: {
         flex: 1,
-        marginRight: 10
+        marginRight: 10,
+        marginBottom: 5
     },
     noteDate: {
         color: "grey"
