@@ -11,7 +11,7 @@ const SignInScreen = () => {
 
     return (
         <View style={styles.container}>
-            <CustomText style={styles.headerText}>SIUM.</CustomText>
+            <CustomText style={styles.headerText}>MyNotes</CustomText>
             {/* <CustomText style={styles.subtitleText}>Welcome to the SIUM experience</CustomText> */}
             <Icon name="logo-google" onPress={googleSignIn} style={styles.googleButton} />
         </View>

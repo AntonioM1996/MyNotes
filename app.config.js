@@ -21,7 +21,8 @@ export default {
             "adaptiveIcon": {
                 "foregroundImage": "./src/assets/adaptive-icon.png",
                 "backgroundColor": "#000000"
-            }
+            },
+            "package": "com.antoniom96.MyNotes"
         },
         "web": {
             "favicon": "./src/assets/clipart3001994.png"

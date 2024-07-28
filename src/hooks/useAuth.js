@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect, useRef } from "r
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, limit, updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { app, auth, db } from "../config/firebase";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 // import * as Device from 'expo-device';
 // import * as Notifications from 'expo-notifications';
 // import Constants from 'expo-constants';
@@ -23,6 +24,10 @@ function useProvideAuth() {
     const [user, setUser] = useState();
     const [userRecord, setUserRecord] = useState();
     const [loading, setLoading] = useState(true);
+
+    GoogleSignin.configure({
+        webClientId: '776796456406-kefa7fmmt928bs366239861jm39nc164.apps.googleusercontent.com',
+    });
 
     useEffect(() => {
         console.log("--- useProvideAuth useEffect ---");
@@ -65,10 +70,18 @@ function useProvideAuth() {
         }
     }, []);
 
+    const googleSignIn = async function() {
+        const { idToken } = await GoogleSignin.signIn();
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+        return auth().signInWithCredential(googleCredential);
+    };
+
     return {
         user,
         userRecord,
-        loading
+        loading,
+        googleSignIn
     };
 }
 
