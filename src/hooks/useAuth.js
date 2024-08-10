@@ -1,12 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { collection, query, where, getDocs, limit, updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { app, auth, db } from "../config/firebase";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-// import * as Device from 'expo-device';
-// import * as Notifications from 'expo-notifications';
-// import Constants from 'expo-constants';
-// import { Platform } from "react-native";
 
 const AuthContext = createContext();
 
@@ -25,10 +20,6 @@ function useProvideAuth() {
     const [userRecord, setUserRecord] = useState();
     const [loading, setLoading] = useState(true);
 
-    GoogleSignin.configure({
-        webClientId: '776796456406-kefa7fmmt928bs366239861jm39nc164.apps.googleusercontent.com',
-    });
-
     useEffect(() => {
         console.log("--- useProvideAuth useEffect ---");
 
@@ -37,7 +28,7 @@ function useProvideAuth() {
             async authenticatedUser => {
                 console.log("useProvideAuth onAuthStateChanged - authenticatedUser", authenticatedUser);
 
-                if(authenticatedUser && authenticatedUser.emailVerified) {
+                if (authenticatedUser && authenticatedUser.emailVerified) {
                     setUser(authenticatedUser);
 
                     const q = query(collection(db, "users"), where("userId", "==", authenticatedUser.uid), limit(1));
@@ -60,7 +51,7 @@ function useProvideAuth() {
                     setUser(null);
                     setUserRecord(null);
                 }
-                
+
                 setLoading(false);
             }
         );
@@ -70,11 +61,31 @@ function useProvideAuth() {
         }
     }, []);
 
-    const googleSignIn = async function() {
-        const { idToken } = await GoogleSignin.signIn();
-        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    const googleSignIn = async function () {
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth();
 
-        return auth().signInWithCredential(googleCredential);
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+        });
+
+        // TODO CHANGE!!! signInWithPopup/redirect DOES NOT WORK WITH REACT NATIVE. Instead,
+        // separately login with Google (react-native-google-signin?), then use the id token from the IdP to sign in to
+        // Firebase with signInWithCredential()
     };
 
     return {
