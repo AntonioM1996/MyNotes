@@ -15,7 +15,8 @@ export default {
         },
         "ios": {
             "supportsTablet": true,
-            "bundleIdentifier": "com.antoniom96.MyNotes"
+            "bundleIdentifier": "com.antoniom96.MyNotes",
+            "googleServicesFile": "./GoogleService-Info.plist"
         },
         "android": {
             "adaptiveIcon": {
@@ -40,6 +41,7 @@ export default {
             eas: {
                 projectId: "57cd6e70-d40c-454d-8d18-b2502daf8806"
             }
-        }
+        },
+        "plugins": ["@react-native-google-signin/google-signin"]
     }
 }

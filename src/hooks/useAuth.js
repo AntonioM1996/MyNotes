@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from "react";
-import { onAuthStateChanged, getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs, limit, updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { app, auth, db } from "../config/firebase";
 
@@ -62,30 +62,11 @@ function useProvideAuth() {
     }, []);
 
     const googleSignIn = async function () {
-        const provider = new GoogleAuthProvider();
-        const auth = getAuth();
-
-        signInWithPopup(auth, provider)
-        .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-        }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
-        });
-
         // TODO CHANGE!!! signInWithPopup/redirect DOES NOT WORK WITH REACT NATIVE. Instead,
         // separately login with Google (react-native-google-signin?), then use the id token from the IdP to sign in to
         // Firebase with signInWithCredential()
+
+        
     };
 
     return {
