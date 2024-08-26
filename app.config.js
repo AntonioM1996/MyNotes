@@ -29,9 +29,9 @@ export default {
             "favicon": "./src/assets/clipart3001994.png"
         },
         "extra": {
-            "eas": {
+            /* "eas": {
                 "projectId": "7e01ef3b-7e65-43b9-bc9b-171f3b028c89"
-            },
+            }, */ // don't remember if this is the correct one
             apiKey: process.env.API_KEY,
             authDomain: process.env.AUTH_DOMAIN,
             projectId: process.env.PROJECT_ID,
